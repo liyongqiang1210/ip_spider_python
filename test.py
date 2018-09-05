@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
 import requests
 import pymysql
 import time
 import random
+from bs4 import BeautifulSoup
 
 
 def read_html(ip_list):
@@ -21,36 +21,44 @@ def read_html(ip_list):
 			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11',
 			'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; SE 2.X MetaSr 1.0; SE 2.X MetaSr 1.0; .NET CLR 2.0.50727; SE 2.X MetaSr 1.0)',
 			'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0',
-			'Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1',
+			'Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1'
 		]
-
-	for i in range(20):
+	referer_list = [
+		'https://blog.csdn.net/wl_Honest/article/details/82426753',
+		'https://www.csdn.net/nav/newarticles'
+		]
+	for i in range(200):
 		ip_obj = random.choice(ip_list)
 		ip_id = ip_obj[0]
 		ip_address = ip_obj[1]
 		ip_port = ip_obj[2]
 		ip_type = ip_obj[3]
-		time.sleep(5)
+		time.sleep(random.randint(30,50))
 		# 开始读取页面
 		try:
-			print('%s://%s:%s===================>可用'%(ip_type, ip_address, ip_port))
+			print('%s://%s:%s===================>可用' % (ip_type, ip_address, ip_port))
 			
 			# 随机获取user-agent
 			user_agent = random.choice(user_agent_list)
-			headers ={
+			# 随机获取referer
+			referer = random.choice(referer_list)
+			headers = {
 				'User-Agent': user_agent,
 				'Content-Type': 'application/json; charset=UTF-8',
 				'Accept': r'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-				'Host': 'blog.csdn.net',
-				'Referer': r'https://www.csdn.net/nav/newarticles'
+				'Referer': referer
 				}
-			response = requests.get('https://blog.csdn.net/wl_Honest/article/details/82426753', 
-				proxies={'%s'%(ip_type):'%s://%s:%s'%(ip_type, ip_address, ip_port)}, headers=headers, timeout=2)
+			response = requests.get('https://blog.csdn.net/wl_Honest/article/details/82426753',
+				proxies={'%s' % (ip_type):'%s://%s:%s' % (ip_type, ip_address, ip_port)}, headers=headers, timeout=2)
 			print(response.status_code)
-			# print(response.text)
+			
+			# 解析页面
+			soup = BeautifulSoup(str(response.text))
+			count = soup.find('span', class_='read-count')
+			print(count)
 
 		except Exception as e:
-			print('%s://%s:%s====================>不可用'%(ip_type, ip_address, ip_port))
+			print('%s://%s:%s====================>不可用' % (ip_type, ip_address, ip_port))
 			continue
 		
 
@@ -59,7 +67,7 @@ def read_ip():
 	try:
 		# 从数据库获取ip地址
 		conn = pymysql.connect(host='127.0.0.1', user='root',
-				password='root', database='lyq_db', charset='utf8')
+				password='root', database='maven', charset='utf8')
 		# 获取游标对象
 		cursor = conn.cursor()
 		sql = 'SELECT * FROM ip_list LIMIT 0,1000'
@@ -75,9 +83,9 @@ def read_ip():
 
 	return ip_list
 
+
 if __name__ == '__main__':
 	
 	ip_list = read_ip()
 	read_html(ip_list)
-
 	

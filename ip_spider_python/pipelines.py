@@ -14,7 +14,7 @@ class IpMysqlPipelines(object):
 		
 		# 打开数据连接
 		self.conn = pymysql.connect(host='127.0.0.1', user='root',
-                password='root', database='maven', charset='utf8')
+                password='root', database='lyq_db', charset='utf8')
 		# 获取游标对象
 		self.cursor = self.conn.cursor()
 		
@@ -36,25 +36,10 @@ class IpMysqlPipelines(object):
 				)
 			self.cursor.execute(sql)
 			self.conn.commit()
+			print('%s:已存入数据库'%(item['ip_address']))
 		except Exception as e:
 			print('插入数据时发生异常' + e)
 			self.conn.rollback()
-		finally:
-			self.cursor.close()
-			self.conn.close()
-		
-		
-	def get_all_ip(self):
-		try:
-			sql = 'SELECT * FROM ip_list LIMIT 0,1000'
-			
-			self.cursor.execute(sql)
-			results = cursor.fetchall()
-			
-			for row in results:
-				print(row)
-		except Exception as e:
-			print('查询数据时发生异常' + e)
 		finally:
 			self.cursor.close()
 			self.conn.close()

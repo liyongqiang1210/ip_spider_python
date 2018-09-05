@@ -17,7 +17,7 @@ class IPSpider(scrapy.Spider):
 	#设定域名
 	allowed_domains = ['xicidaili.com']
 	#填写爬取地址
-	start_urls = ['http://www.xicidaili.com/nn/16']
+	start_urls = ['http://www.xicidaili.com/nn']
 
 	def parse(self, response):
 		item = IpItem()
@@ -54,7 +54,9 @@ class IPSpider(scrapy.Spider):
 					continue
 
 		next_link = response.xpath('//a[@class="next_page"]//@href').extract_first()
-		if next_link != None:
+		i = 0 # 控制爬取页数
+		if next_link != None and i == 10:
+			i = i+1
 			yield scrapy.Request('http://www.xicidaili.com' + next_link, callback=self.parse)
 
 		time.sleep(random.randint(1,5))

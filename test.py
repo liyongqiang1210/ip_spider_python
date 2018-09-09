@@ -33,7 +33,7 @@ def read_html(ip_list):
 		ip_address = ip_obj[1]
 		ip_port = ip_obj[2]
 		ip_type = ip_obj[3]
-		time.sleep(random.randint(30,50))
+		time.sleep(random.randint(60,61))
 		# 开始读取页面
 		try:
 			print('%s://%s:%s===================>可用' % (ip_type, ip_address, ip_port))

@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//ip_spider_python/middlewares.py=utf-8
 encoding//ip_spider_python/pipelines.py=utf-8
 encoding//ip_spider_python/settings.py=utf-8
 encoding//ip_spider_python/spiders/ip_spider.py=utf-8

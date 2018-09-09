@@ -54,17 +54,16 @@ class IPSpider(scrapy.Spider):
 					continue
 
 		next_link = response.xpath('//a[@class="next_page"]//@href').extract_first()
-		i = 0 # 控制爬取页数
-		if next_link != None and i == 10:
-			i = i+1
-			yield scrapy.Request('http://www.xicidaili.com' + next_link, callback=self.parse)
+
+		if next_link!= None:
+			yield scrapy.Request('http://www.xicidaili.com%s' %(next_link), callback=self.parse)
 
 		time.sleep(random.randint(1,5))
 
 	def verify_ip(slef, ip_type, proxies):
 		""" 验证ip可用性 """
 		try:
-			response = requests.get('http://www.baidu.com', proxies={str(ip_type):proxies}, timeout=2)
+			response = requests.get('https://www.baidu.com/', proxies={str(ip_type):proxies}, timeout=2)
 			if response.status_code == 200:
 				print(proxies + '====================>可用')
 				return True

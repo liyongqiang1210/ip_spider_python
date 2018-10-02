@@ -63,9 +63,10 @@ class IPSpider(scrapy.Spider):
 	def verify_ip(slef, ip_type, proxies):
 		""" 验证ip可用性 """
 		try:
-			response = requests.get('https://www.baidu.com/', proxies={str(ip_type):proxies}, timeout=2)
+			response = requests.get('http://piao.qunar.com/ticket/list.htm?keyword=珠海&region=&from=mps_search_suggest', proxies={str(ip_type):proxies}, timeout=2)
 			if response.status_code == 200:
 				print(proxies + '====================>可用')
+				print(response.text)
 				return True
 			else:
 				print(proxies + '====================>不可用')
